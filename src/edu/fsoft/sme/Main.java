@@ -5,10 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import edu.fsoft.sme.data.DataSource;
 import edu.fsoft.sme.models.Student;
+import edu.fsoft.sme.models.Subject;
 
 class Main {
 	
@@ -32,7 +34,7 @@ class Main {
 				this.subMenu("SUBJECT");
 				break;
 			case 3:
-				
+				this.assessment();
 				break;
 			case 4:
 				System.exit(0);
@@ -48,6 +50,18 @@ class Main {
 			System.out.println("Your choice is not correct, pls enter 1-4");
 			this.menu();
 		}
+	}
+	
+	private void assessment() {
+		Iterator<Student> students = DataSource.INSTANCE.getStudents();
+		
+		System.out.println("============== Student Profile ============== | ===========Subjects ============");
+		System.out.print("\tStudent Id \t Student name \t      |");
+		Iterator<Subject> subjects = DataSource.INSTANCE.getSubjects();
+		while(subjects.hasNext()) {
+			System.out.print(subjects.next().getName() + " \t ");
+		}
+		System.out.println();
 	}
 	
 	private void subMenu(String sub) {
@@ -71,7 +85,7 @@ class Main {
 
 			case 1:
 				if ("student".equals(sub.toLowerCase())) {
-					
+					this.createStudent();
 				} else if ("subject".equals(sub.toLowerCase())) {
 
 				}
@@ -93,13 +107,16 @@ class Main {
 	}
 	
 	private Student createStudent() {
-		System.out.println("Enter student name:");
-		System.out.println("Enter student gender:");
-		System.out.println("Enter student date of birth");
 		try {
 			Scanner scanner = new Scanner(System.in);
+			
+			System.out.println("Enter student name:");
 			String name = scanner.next();
+			
+			System.out.println("Enter student gender:");
 			String gender = scanner.next();
+			
+			System.out.println("Enter student date of birth (dd/MM/yyyy)");
 			String dob = scanner.next();
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -107,10 +124,12 @@ class Main {
 			Date dateOfBirth = formatter.parse(dob);
 			Student student = new Student(DataSource.INSTANCE.getStudentId(), name, gender, dateOfBirth);
 			DataSource.INSTANCE.add(student);
+			
 		} catch (InputMismatchException ex) {
 			
-		} catch (ParseException e) {
-			
+		} catch (ParseException ex) {
+			System.out.println("Re-Enter student form: ");
+			this.createStudent();
 		}
 		return null;
 	}
