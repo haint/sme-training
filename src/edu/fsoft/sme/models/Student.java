@@ -1,11 +1,12 @@
 package edu.fsoft.sme.models;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Student implements Edu {
+public class Student implements Edu, Serializable {
 
 	private int id;
 	
@@ -54,6 +55,7 @@ public class Student implements Edu {
 	}
 	
 	public float avg() {
+		
 		return 0;
 	}
 	

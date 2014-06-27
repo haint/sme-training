@@ -6,9 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 
 import edu.fsoft.sme.data.DataSource;
+import edu.fsoft.sme.data.StudentController;
+import edu.fsoft.sme.data.SubjectController;
 import edu.fsoft.sme.models.Student;
 import edu.fsoft.sme.models.Subject;
 
@@ -53,15 +56,34 @@ class Main {
 	}
 	
 	private void assessment() {
-		Iterator<Student> students = DataSource.INSTANCE.getStudents();
-		
 		System.out.println("============== Student Profile ============== | ===========Subjects ============");
 		System.out.print("\tStudent Id \t Student name \t      |");
+		
 		Iterator<Subject> subjects = DataSource.INSTANCE.getSubjects();
+		
 		while(subjects.hasNext()) {
 			System.out.print(subjects.next().getName() + " \t ");
 		}
+		
 		System.out.println();
+		
+		Iterator<Student> students = DataSource.INSTANCE.getStudents();
+		
+		while (students.hasNext()) {
+			Student st = students.next();
+			Map<Subject, Float> marks = st.getMark();
+			
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("\t");
+			
+			for (Float f : marks.values()) {
+				stringBuilder.append(f).append("\t");
+			}
+			
+			System.out.println(st.getID() + "\t" + st.getName() + stringBuilder.toString());
+		}
+		
+		
 	}
 	
 	private void subMenu(String sub) {
@@ -85,16 +107,34 @@ class Main {
 
 			case 1:
 				if ("student".equals(sub.toLowerCase())) {
-					this.createStudent();
+					StudentController.INSTANCE.createStudent();
 				} else if ("subject".equals(sub.toLowerCase())) {
-
+					SubjectController.INSTANCE.createSubject();
+				}
+			case 2:
+				if ("student".equals(sub.toLowerCase())) {
+					
+					System.out.println("Enter student id:");
+					int stuId = scanner.nextInt();
+					
+					System.out.println("Enter subject id:");
+					int subId = scanner.nextInt();
+					
+					System.out.println("Enter score:");
+					float score = scanner.nextFloat();
+					
+					StudentController.INSTANCE.addMark(stuId, subId, score);
+					
+				} else if ("subject".equals(sub.toLowerCase())) {
+					
 				}
 			case 5:
 				this.clear();
 				this.menu();
 				break;
 			default:
-				break;
+				this.clear();
+				this.subMenu(sub);
 			}
 		
 		} catch (InputMismatchException ex) {
@@ -104,34 +144,6 @@ class Main {
 		} catch (NullPointerException ex) {
 			System.err.println("Sub type is not correct");
 		}
-	}
-	
-	private Student createStudent() {
-		try {
-			Scanner scanner = new Scanner(System.in);
-			
-			System.out.println("Enter student name:");
-			String name = scanner.next();
-			
-			System.out.println("Enter student gender:");
-			String gender = scanner.next();
-			
-			System.out.println("Enter student date of birth (dd/MM/yyyy)");
-			String dob = scanner.next();
-			
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-			
-			Date dateOfBirth = formatter.parse(dob);
-			Student student = new Student(DataSource.INSTANCE.getStudentId(), name, gender, dateOfBirth);
-			DataSource.INSTANCE.add(student);
-			
-		} catch (InputMismatchException ex) {
-			
-		} catch (ParseException ex) {
-			System.out.println("Re-Enter student form: ");
-			this.createStudent();
-		}
-		return null;
 	}
 	
 	private void clear() {

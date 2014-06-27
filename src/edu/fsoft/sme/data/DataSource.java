@@ -1,8 +1,10 @@
 package edu.fsoft.sme.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import edu.fsoft.sme.models.Edu;
 import edu.fsoft.sme.models.Student;
@@ -10,13 +12,13 @@ import edu.fsoft.sme.models.Subject;
 
 public class DataSource {
 
-	private List<Student> students = new ArrayList<Student>();
+	private Map<Integer, Student> students = new HashMap<Integer, Student>();
 	
-	private List<Subject> subjects = new ArrayList<Subject>();
+	private Map<Integer, Subject> subjects = new HashMap<Integer, Subject>();
 	
-	private int studentCounter = 0;
+	private int studentCounter = 1;
 	
-	private int subjectCounter = 0;
+	private int subjectCounter = 1;
 	
 	public static DataSource INSTANCE = new DataSource();
 	
@@ -41,11 +43,15 @@ public class DataSource {
 		
 		if (edu instanceof Student) {
 			
-			students.add((Student) edu);
+			Student st = (Student) edu;
+			
+			students.put(st.getID(), st);
 			
 		} else if (edu instanceof Subject) {
 			
-			subjects.add((Subject) edu);
+			Subject sb = (Subject) edu;
+			
+			subjects.put(sb.getID(), sb);
 			
 		}
 	}
@@ -55,7 +61,11 @@ public class DataSource {
 	 * @return page list of subjects
 	 */
 	public Iterator<Subject> getSubjects() {
-		return subjects.iterator();
+		return subjects.values().iterator();
+	}
+	
+	public Subject getSubject(int subId) {
+		return subjects.get(subId);
 	}
 	
 	/**
@@ -63,6 +73,14 @@ public class DataSource {
 	 * @return page list of students
 	 */
 	public Iterator<Student> getStudents() {
-		return students.iterator();
+		return students.values().iterator();
+	}
+	
+	public Student getStudent(int studentId) {
+		return students.get(studentId);
+	}
+	
+	public void updateStudent(Student student) {
+		students.put(student.getID(), student);
 	}
 }

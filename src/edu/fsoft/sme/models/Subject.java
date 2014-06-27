@@ -1,6 +1,8 @@
 package edu.fsoft.sme.models;
 
-public class Subject implements Edu {
+import java.io.Serializable;
+
+public class Subject implements Edu, Serializable {
 	
 	private int id;
 	
